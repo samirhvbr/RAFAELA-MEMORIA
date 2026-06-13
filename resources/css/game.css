@@ -1,0 +1,262 @@
+/* ===========================================================
+   Jogo da Memória da Rafaela — estilos do jogo
+   Paleta: rosa #FF6B9D · roxo #A855F7 · fundo #FFF0F5
+   =========================================================== */
+
+* { box-sizing: border-box; margin: 0; padding: 0; }
+
+:root {
+    --rosa: #ff6b9d;
+    --roxo: #a855f7;
+    --rosa-claro: #fff0f5;
+    --roxo-escuro: #7a2e5a;
+    --sombra: 0 8px 24px rgba(168, 85, 247, .25);
+}
+
+html, body {
+    min-height: 100%;
+}
+
+body {
+    font-family: 'Segoe UI', 'Comic Sans MS', 'Trebuchet MS', cursive, sans-serif;
+    background: linear-gradient(160deg, #fff0f5 0%, #ffe0ef 45%, #f3e8ff 100%);
+    color: var(--roxo-escuro);
+    -webkit-tap-highlight-color: transparent;
+    overflow-x: hidden;
+}
+
+/* ── Sistema de telas ─────────────────────────────────────── */
+
+.screen {
+    display: none;
+    min-height: 100vh;
+    min-height: 100dvh;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 1.2rem;
+    text-align: center;
+}
+.screen.active { display: flex; }
+
+/* ── Botões ───────────────────────────────────────────────── */
+
+.btn {
+    font-family: inherit;
+    font-weight: 700;
+    border: none;
+    border-radius: 999px;
+    cursor: pointer;
+    padding: .85rem 1.8rem;
+    font-size: 1.1rem;
+    transition: transform .12s ease, box-shadow .12s ease, filter .12s ease;
+    user-select: none;
+}
+.btn:active { transform: scale(.96); }
+
+.btn-play {
+    background: linear-gradient(135deg, var(--rosa), var(--roxo));
+    color: #fff;
+    box-shadow: var(--sombra);
+    font-size: 1.4rem;
+    padding: 1rem 2.6rem;
+    margin: .4rem 0;
+}
+.btn-play:hover { filter: brightness(1.06); transform: translateY(-2px); }
+
+.btn-ghost {
+    background: rgba(255, 255, 255, .7);
+    color: var(--roxo);
+    box-shadow: 0 2px 8px rgba(0, 0, 0, .08);
+}
+.btn-restart { margin-top: 1rem; font-size: .95rem; padding: .6rem 1.3rem; }
+
+/* ── Tela inicial ─────────────────────────────────────────── */
+
+.start-card, .win-card, .final-card {
+    background: rgba(255, 255, 255, .75);
+    backdrop-filter: blur(6px);
+    border-radius: 28px;
+    padding: 2.2rem 1.8rem;
+    box-shadow: var(--sombra);
+    max-width: 420px;
+    width: 100%;
+}
+
+.mascot {
+    font-size: 5rem;
+    animation: bounce 1.8s ease-in-out infinite;
+    display: inline-block;
+}
+@keyframes bounce {
+    0%, 100% { transform: translateY(0) rotate(-3deg); }
+    50% { transform: translateY(-14px) rotate(3deg); }
+}
+
+.title {
+    font-size: 2.6rem;
+    line-height: 1.05;
+    background: linear-gradient(135deg, var(--rosa), var(--roxo));
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+    margin: .4rem 0;
+}
+.subtitle { font-size: 1.3rem; color: var(--rosa); font-weight: 700; }
+.hint { margin-top: 1rem; font-size: .95rem; opacity: .8; }
+
+/* ── HUD do jogo ──────────────────────────────────────────── */
+
+.game-bar {
+    display: flex;
+    gap: .6rem;
+    flex-wrap: wrap;
+    justify-content: center;
+    margin-bottom: 1.1rem;
+}
+.pill {
+    background: rgba(255, 255, 255, .85);
+    border-radius: 999px;
+    padding: .5rem 1rem;
+    font-weight: 700;
+    font-size: 1rem;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, .08);
+    display: inline-flex;
+    align-items: center;
+    gap: .35rem;
+}
+.pill small { font-weight: 600; opacity: .65; margin-left: .25rem; }
+.pill-level { color: var(--roxo); }
+.pill-errors { color: #e63946; }
+
+/* ── Tabuleiro ────────────────────────────────────────────── */
+
+.board-wrap { display: flex; justify-content: center; width: 100%; }
+
+.board {
+    display: grid;
+    grid-template-columns: repeat(var(--cols, 4), 1fr);
+    gap: clamp(4px, 1.4vw, 10px);
+    width: min(90vw, 550px);
+}
+
+.card {
+    aspect-ratio: 1 / 1;
+    background: transparent;
+    border: none;
+    padding: 0;
+    cursor: pointer;
+    perspective: 600px;
+    -webkit-tap-highlight-color: transparent;
+}
+.card-inner {
+    position: relative;
+    width: 100%;
+    height: 100%;
+    transition: transform .45s cubic-bezier(.4, .2, .2, 1);
+    transform-style: preserve-3d;
+}
+.card.flipped .card-inner { transform: rotateY(180deg); }
+
+.card-face {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: clamp(8px, 2.4vw, 16px);
+    backface-visibility: hidden;
+    -webkit-backface-visibility: hidden;
+    font-size: calc(min(90vw, 550px) / var(--cols, 4) * 0.52);
+    line-height: 1;
+    box-shadow: 0 3px 8px rgba(122, 46, 90, .18);
+}
+.card-back {
+    background: linear-gradient(135deg, var(--rosa), var(--roxo));
+    color: rgba(255, 255, 255, .85);
+}
+.card-front {
+    background: #fff;
+    transform: rotateY(180deg);
+}
+
+.card.matched .card-inner { transform: rotateY(180deg); }
+.card.matched { animation: pop .4s ease; }
+.card.matched .card-front {
+    background: #eafff5;
+    box-shadow: 0 0 0 3px #06d6a0 inset, 0 3px 8px rgba(6, 214, 160, .3);
+}
+@keyframes pop {
+    0% { transform: scale(1); }
+    45% { transform: scale(1.12); }
+    100% { transform: scale(1); }
+}
+
+/* ── Tela de vitória ──────────────────────────────────────── */
+
+.win-emoji { font-size: 4rem; animation: bounce 1.4s ease infinite; }
+.win-title { font-size: 2rem; color: var(--roxo); margin: .4rem 0; }
+
+.score-badge {
+    width: 92px;
+    height: 92px;
+    margin: .6rem auto;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 2.6rem;
+    font-weight: 800;
+    color: #fff;
+    background: linear-gradient(135deg, var(--rosa), var(--roxo));
+    box-shadow: var(--sombra);
+}
+.score-badge[data-score="s"] { background: linear-gradient(135deg, #ffd166, #ff9f1c); }
+.score-badge[data-score="ap"] { background: linear-gradient(135deg, #06d6a0, #4cc9f0); }
+.score-badge[data-score="a"] { background: linear-gradient(135deg, #4cc9f0, #a855f7); }
+.score-badge[data-score="b"] { background: linear-gradient(135deg, #a855f7, #ff6b9d); }
+.score-badge[data-score="c"] { background: linear-gradient(135deg, #adb5bd, #6c757d); }
+
+.win-stats {
+    list-style: none;
+    display: flex;
+    justify-content: center;
+    gap: 1.4rem;
+    margin: 1.2rem 0;
+}
+.win-stats li { display: flex; flex-direction: column; }
+.win-stats span { font-size: .85rem; opacity: .7; }
+.win-stats strong { font-size: 1.4rem; color: var(--roxo); }
+
+/* ── Confete ──────────────────────────────────────────────── */
+
+.confetti {
+    position: fixed;
+    inset: 0;
+    pointer-events: none;
+    overflow: hidden;
+    z-index: 50;
+}
+.confetti-piece {
+    position: absolute;
+    top: -12px;
+    width: 10px;
+    height: 14px;
+    border-radius: 2px;
+    opacity: .9;
+    animation-name: fall;
+    animation-timing-function: linear;
+    animation-fill-mode: forwards;
+}
+@keyframes fall {
+    0% { transform: translateY(-10vh) rotate(0deg); opacity: 1; }
+    100% { transform: translateY(110vh) rotate(540deg); opacity: .9; }
+}
+
+/* ── Acessibilidade: reduzir movimento ────────────────────── */
+
+@media (prefers-reduced-motion: reduce) {
+    .mascot, .win-emoji, .card.matched { animation: none; }
+    .card-inner { transition-duration: .2s; }
+    .confetti { display: none; }
+}
