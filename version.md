@@ -1,6 +1,6 @@
 # Versão — Jogo da Memória da Rafaela
 
-**Versão atual:** `0.1.3`
+**Versão atual:** `0.1.4`
 
 > Esta versão é a fonte da verdade do projeto e é lida em runtime via
 > `config('app.version')` — a aplicação extrai o **primeiro número semver
@@ -56,6 +56,15 @@ entrega). Commits adicionais da mesma entrega repetem a versão sem novo bump.
 
 > Ordem decrescente (mais recente no topo). Cada entrada lista as mudanças e os
 > gatilhos que justificaram o bump.
+
+### `0.1.4` — 2026-06-13 — Correção: cartas não viravam / sem fundo
+
+- `resources/css/game.css`: `.card-inner` (um `<span>`, portanto inline) ignorava
+  `width/height: 100%`, colapsando as faces da carta — o fundo gradiente não
+  aparecia e o flip não revelava o emoji (jogo parecia não clicável). Adicionado
+  `display: block`. Requer rebuild dos assets (`npm run build`).
+
+_Gatilho:_ correção de layout do jogo.
 
 ### `0.1.3` — 2026-06-13 — Permissões: deploy-user vs FPM-user
 

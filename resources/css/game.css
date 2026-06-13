@@ -150,6 +150,7 @@ body {
     -webkit-tap-highlight-color: transparent;
 }
 .card-inner {
+    display: block;          /* o elemento é um <span>: sem isto, width/height 100% são ignorados */
     position: relative;
     width: 100%;
     height: 100%;
