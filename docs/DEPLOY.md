@@ -124,12 +124,31 @@ php artisan view:cache
 
 ## 6. Permissões
 
+`storage/` e `bootstrap/cache/` precisam ser **graváveis pelo usuário do
+PHP-FPM** — caso contrário o Laravel falha ao compilar as views
+(`file_put_contents(.../storage/framework/views/...): Permission denied`).
+
+Descubra o usuário do PHP-FPM (não assuma `www-data`):
+
 ```bash
-sudo chown -R www-data:www-data /var/www/jogo-rafaela/storage \
-    /var/www/jogo-rafaela/bootstrap/cache
-sudo find /var/www/jogo-rafaela/storage -type d -exec chmod 775 {} \;
-sudo find /var/www/jogo-rafaela/bootstrap/cache -type d -exec chmod 775 {} \;
+ps -eo user,comm | grep php-fpm | grep -v root      # ex.: www-data, b3sys, nginx...
 ```
+
+Aplique a propriedade e as permissões (ajuste `USUARIO_FPM` e o caminho):
+
+```bash
+cd /caminho/do/projeto        # ex.: /srv/www/rafa.hannaverza.com.br
+
+sudo chown -R USUARIO_FPM:USUARIO_FPM storage bootstrap/cache
+sudo find storage bootstrap/cache -type d -exec chmod 775 {} \;
+
+# Limpa caches stale (importante se algum artisan rodou como root antes):
+sudo -u USUARIO_FPM php artisan optimize:clear
+```
+
+> Dica: rode TODOS os passos de deploy como o usuário do FPM
+> (`sudo -u USUARIO_FPM ...`) para evitar arquivos com dono `root` em
+> `storage/` e `bootstrap/cache/`.
 
 ---
 
@@ -190,6 +209,7 @@ Ele executa: `git pull` → `composer install --no-dev` →
 
 | Sintoma | Causa provável | Ação |
 |---|---|---|
+| `file_put_contents(.../storage/framework/views/...): Permission denied` | `storage/` com dono `root` (não o usuário do FPM) | passo 6: `chown` p/ o usuário do FPM + `optimize:clear` |
 | `500` em branco | permissão de `storage/` | passo 6; ver `storage/logs/laravel.log` |
 | `npm ci` falha (EUSAGE) | repo sem `package-lock.json` | rode `npm install` (gera o lockfile); commite-o depois |
 | `vite: not found` no build | dependências Node não instaladas | rode `npm install` antes de `npm run build` |

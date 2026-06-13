@@ -1,6 +1,6 @@
 # Versão — Jogo da Memória da Rafaela
 
-**Versão atual:** `0.1.1`
+**Versão atual:** `0.1.2`
 
 > Esta versão é a fonte da verdade do projeto e é lida em runtime via
 > `config('app.version')` — a aplicação extrai o **primeiro número semver
@@ -56,6 +56,16 @@ entrega). Commits adicionais da mesma entrega repetem a versão sem novo bump.
 
 > Ordem decrescente (mais recente no topo). Cada entrada lista as mudanças e os
 > gatilhos que justificaram o bump.
+
+### `0.1.2` — 2026-06-13 — Documentação de permissões do deploy
+
+- `docs/DEPLOY.md` §6: não assume mais `www-data`/`/var/www`. Explica descobrir
+  o usuário do PHP-FPM, faz `chown` de `storage/` e `bootstrap/cache/` para ele
+  e roda `optimize:clear`. Corrige o erro
+  `file_put_contents(.../storage/framework/views/...): Permission denied`.
+- Nova linha de troubleshooting para o erro de permissão.
+
+_Gatilho:_ alteração de configuração/documentação de deploy.
 
 ### `0.1.1` — 2026-06-13 — Correção do build de assets no deploy
 
