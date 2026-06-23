@@ -1,0 +1,83 @@
+{
+  "$schema": "https://json.schemastore.org/claude-code-settings.json",
+  "_comment_perfil": "PERFIL FABLE-5 — Claude Fable 5 no model e nos subagentes; fallback Opus. Janela 1M nativa (Fable 5 roda 1M na API Anthropic). Effort 'max' via env CLAUDE_CODE_EFFORT_LEVEL. Thinking sempre adaptativo no Fable 5. CREDITOS: incluso no Max ate ~22/jun/2026; depois ~2x o Opus. Requer Claude Code v2.1.170+.",
+  "model": "fable",
+  "fallbackModel": [
+    "opus"
+  ],
+  "env": {
+    "CLAUDE_CODE_SUBAGENT_MODEL": "fable",
+    "ANTHROPIC_DEFAULT_FABLE_MODEL": "claude-fable-5",
+    "ANTHROPIC_DEFAULT_OPUS_MODEL": "claude-opus-4-8",
+    "CLAUDE_CODE_EFFORT_LEVEL": "max"
+  },
+  "permissions": {
+    "_comment": "Permissoes do projeto - Laravel",
+    "defaultMode": "plan",
+    "allow": [
+      "Read",
+      "Edit",
+      "Write",
+      "Bash(git status:*)",
+      "Bash(git diff:*)",
+      "Bash(git log:*)",
+      "Bash(git show:*)",
+      "Bash(git branch:*)",
+      "Bash(git add:*)",
+      "Bash(git commit:*)",
+      "Bash(git push:*)",
+      "Bash(php artisan about:*)",
+      "Bash(php artisan route:list:*)",
+      "Bash(php artisan migrate:status:*)",
+      "Bash(php artisan view:clear:*)",
+      "Bash(php artisan config:clear:*)",
+      "Bash(php artisan cache:clear:*)",
+      "Bash(php artisan route:clear:*)",
+      "Bash(php artisan optimize:clear:*)",
+      "Bash(php artisan tinker --execute:*)",
+      "Bash(php artisan test:*)",
+      "Bash(php artisan make:*)",
+      "Bash(php -l:*)",
+      "Bash(composer validate:*)",
+      "Bash(composer show:*)",
+      "Bash(composer install:*)",
+      "Bash(composer dump-autoload:*)",
+      "Bash(node -c:*)",
+      "Bash(npm run dev:*)",
+      "Bash(npm run build:*)",
+      "Bash(npm install:*)",
+      "Bash(./vendor/bin/pint:*)",
+      "Bash(./vendor/bin/phpstan:*)",
+      "Bash(./vendor/bin/pest:*)",
+      "Bash(./vendor/bin/phpunit:*)"
+    ],
+    "deny": [
+      "Read(./storage/oauth-*.key)",
+      "Read(./storage/*.pem)",
+      "Read(./auth.json)",
+      "Bash(rm -rf:*)",
+      "Bash(rm -rf /:*)",
+      "Bash(git push --force:*)",
+      "Bash(git push -f:*)",
+      "Bash(git reset --hard:*)",
+      "Bash(git clean -fd:*)",
+      "Bash(curl * | sh:*)",
+      "Bash(curl * | bash:*)",
+      "Bash(wget * | sh:*)",
+      "Bash(php artisan migrate:fresh:*)",
+      "Bash(php artisan migrate:reset:*)",
+      "Bash(php artisan db:wipe:*)",
+      "Bash(mysql:*)",
+      "Bash(mariadb:*)"
+    ],
+    "ask": [
+      "Bash(sudo:*)",
+      "Bash(php artisan migrate:*)",
+      "Bash(composer require:*)",
+      "Bash(composer update:*)",
+      "Bash(npm install --save:*)",
+      "Bash(mysqldump:*)",
+      "Bash(mariadb-dump:*)"
+    ]
+  }
+}

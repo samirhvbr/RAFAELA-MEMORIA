@@ -19,3 +19,6 @@ yarn-error.log
 /.vscode
 /.zed
 /database/database.sqlite
+
+# Claude Code — config local da sessao
+.claude/settings.local.json
