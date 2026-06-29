@@ -9,6 +9,18 @@ Este documento é a referência operacional para agentes de IA neste projeto.
 
 ---
 
+## 🔄 Antes de começar: `git pull`
+
+**SEMPRE** verifique atualizações remotas antes de escrever ou alterar qualquer coisa neste repositório:
+
+```bash
+git pull          # já está pré-autorizado (allow)
+```
+
+Trabalhar sobre uma base desatualizada gera conflitos. Puxe primeiro, sempre. Para só inspecionar antes: `git fetch && git status`.
+
+---
+
 ## Stack
 
 | Camada | Tecnologia |
