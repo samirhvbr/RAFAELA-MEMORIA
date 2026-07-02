@@ -1,6 +1,6 @@
 # Versão — Jogo da Memória da Rafaela
 
-**Versão atual:** `0.1.5`
+**Versão atual:** `0.1.6`
 
 > Esta versão é a fonte da verdade do projeto e é lida em runtime via
 > `config('app.version')` — a aplicação extrai o **primeiro número semver
@@ -56,6 +56,18 @@ entrega). Commits adicionais da mesma entrega repetem a versão sem novo bump.
 
 > Ordem decrescente (mais recente no topo). Cada entrada lista as mudanças e os
 > gatilhos que justificaram o bump.
+
+### `0.1.6` — 2026-07-02 — Novo deploy.sh consolidado na raiz
+
+- Adiciona `deploy.sh` na raiz do projeto: lock anti-concorrência, backup do
+  banco via `mysqldump` antes de migrar, `migrate --force` com rollback
+  automático do último batch em caso de falha, split de usuário `b3sys`
+  (git/composer/npm) vs `www-data` (artisan), reload do PHP-FPM ao final
+  (limpa OPcache) e notificação Telegram opcional. Modelado no `deploy.sh` do
+  ONLINE/INTRANET (mesma frota de projetos).
+- O script antigo em `deploy/deploy.sh` foi mantido por ora, sem alteração.
+
+_Gatilho:_ alteração de configuração de deploy (mesmo padrão de `0.1.1`–`0.1.3`).
 
 ### `0.1.5` — 2026-06-18 — Limpeza: remove README de outro projeto
 
