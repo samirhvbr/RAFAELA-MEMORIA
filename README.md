@@ -1,107 +1,107 @@
-# Jogo da Memória da Rafaela
+# Rafaela's Memory Game
 
-Aplicação web de **jogo da memória infantil** com painel administrativo para
-acompanhamento das partidas.
+Web application for a **children's memory game** with an admin panel for
+tracking matches.
 
-> Versão atual: leia [`version.md`](version.md) (propagada via `config('app.version')`).
-> Especificação completa: [`docs/roteiro-jogo-rafaela.md`](docs/roteiro-jogo-rafaela.md).
+> Current version: read [`version.md`](version.md) (propagated via `config('app.version')`).
+> Full specification: [`docs/roteiro-jogo-rafaela.md`](docs/roteiro-jogo-rafaela.md).
 
 ---
 
-## Visão Geral
+## Overview
 
-| Funcionalidade | Descrição |
+| Feature | Description |
 |---|---|
-| Jogo da memória | 7 níveis de dificuldade (2×2 → 8×8), peças com emojis infantis |
-| Sistema de notas | S / A+ / A / B / C conforme tempo e erros |
-| Registro de partidas | Cada partida gravada (IP, tempo, erros, acertos, nível, nota) |
-| Painel admin | Login protegido + dashboard com estatísticas, filtros e exportação CSV |
+| Memory game | 7 difficulty levels (2×2 → 8×8), tiles with children's emojis |
+| Grading system | S / A+ / A / B / C based on time and mistakes |
+| Match logging | Each match recorded (IP, time, mistakes, hits, level, grade) |
+| Admin panel | Protected login + dashboard with statistics, filters and CSV export |
 
-**Público-alvo:** uma criança (a Rafaela). A experiência do jogo nunca é
-interrompida por falha técnica — o registro de log falha de forma silenciosa.
+**Target audience:** one child (Rafaela). The game experience is never
+interrupted by a technical failure — logging fails silently.
 
 ---
 
 ## Stack
 
-| Camada | Tecnologia |
+| Layer | Technology |
 |---|---|
 | Backend | Laravel 11 / PHP 8.2+ |
-| Frontend | Blade + Vite + **CSS/JS puro** (sem framework CSS, sem libs JS) |
-| Banco de dados | MariaDB (prod) — SQLite suportado para dev local |
-| Servidor | Debian 12 (Bookworm) |
+| Frontend | Blade + Vite + **pure CSS/JS** (no CSS framework, no JS libs) |
+| Database | MariaDB (prod) — SQLite supported for local dev |
+| Server | Debian 12 (Bookworm) |
 | Web server | Nginx + PHP-FPM |
 | Deploy | Git + Composer + Artisan |
 
 ---
 
-## Primeiro Setup (instalação limpa)
+## First Setup (clean install)
 
-Pré-requisitos locais: PHP 8.2+, Composer, Node 18+ e (opcional) MariaDB.
+Local prerequisites: PHP 8.2+, Composer, Node 18+ and (optional) MariaDB.
 
 ```bash
-# 1. Instalar dependências PHP
+# 1. Install PHP dependencies
 composer install
 
-# 2. Instalar dependências Node e buildar assets
+# 2. Install Node dependencies and build assets
 npm install
-npm run build        # ou: npm run dev (HMR em desenvolvimento)
+npm run build        # or: npm run dev (HMR in development)
 
-# 3. Configurar ambiente
+# 3. Configure the environment
 cp .env.example .env
 php artisan key:generate
 
-# 4. Definir a senha do admin (NÃO commite a senha real)
-#    Gere o hash e cole em ADMIN_PASSWORD_HASH no .env:
+# 4. Set the admin password (do NOT commit the real password)
+#    Generate the hash and paste it into ADMIN_PASSWORD_HASH in .env:
 php artisan tinker --execute="echo Hash::make('SUA_SENHA_AQUI');"
 
-# 5. Banco de dados
+# 5. Database
 #    MariaDB:  mysql -u root -p -e "CREATE DATABASE jogo_rafaela CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;"
-#    (ou, para dev rápido, use SQLite — ver .env.example)
+#    (or, for quick dev, use SQLite — see .env.example)
 php artisan migrate
 
-# 6. Rodar localmente
+# 6. Run locally
 php artisan serve    # http://localhost:8000
 ```
 
-Login do admin em `http://localhost:8000/admin/login`.
+Admin login at `http://localhost:8000/admin/login`.
 
 ---
 
-## Comandos do Dia a Dia
+## Day-to-Day Commands
 
 ```bash
-php artisan serve           # servidor de desenvolvimento
-npm run dev                 # Vite com HMR
-npm run build               # build de produção dos assets
+php artisan serve           # development server
+npm run dev                 # Vite with HMR
+npm run build               # production build of the assets
 
-php artisan migrate         # roda migrations
+php artisan migrate         # runs migrations
 php artisan migrate:status
 php artisan migrate:rollback --step=1
 
-php artisan pint            # formata o código (se instalado)
-php -l app/Http/Controllers/GameController.php   # valida sintaxe
-php artisan optimize:clear  # limpa caches
+php artisan pint            # formats the code (if installed)
+php -l app/Http/Controllers/GameController.php   # validates syntax
+php artisan optimize:clear  # clears caches
 ```
 
 ---
 
-## Estrutura do Projeto
+## Project Structure
 
 ```
 app/
 ├── Http/
 │   ├── Controllers/
-│   │   ├── GameController.php          # serve a SPA do jogo
-│   │   ├── GameLogController.php       # POST /api/log — grava a partida
+│   │   ├── GameController.php          # serves the game SPA
+│   │   ├── GameLogController.php       # POST /api/log — records the match
 │   │   └── Admin/
-│   │       ├── AuthController.php       # login/logout do admin
-│   │       └── DashboardController.php  # painel de logs
+│   │       ├── AuthController.php       # admin login/logout
+│   │       └── DashboardController.php  # logs panel
 │   ├── Middleware/
-│   │   └── AdminAuth.php                # protege as rotas /admin
+│   │   └── AdminAuth.php                # protects the /admin routes
 │   └── Requests/
-│       ├── StoreGameLogRequest.php      # validação do log de partida
-│       └── AdminLoginRequest.php        # validação do login
+│       ├── StoreGameLogRequest.php      # match log validation
+│       └── AdminLoginRequest.php        # login validation
 ├── Models/
 │   └── GameLog.php
 └── Providers/
@@ -120,42 +120,42 @@ resources/
 └── js/{game,admin}.js
 
 routes/web.php
-config/admin.php                          # credenciais do admin (via .env)
-docs/DEPLOY.md                            # guia de deploy Debian + Nginx + MariaDB
+config/admin.php                          # admin credentials (via .env)
+docs/DEPLOY.md                            # Debian + Nginx + MariaDB deploy guide
 ```
 
 ---
 
-## Convenção de Versão e Commit
+## Version and Commit Convention
 
-Versão em [`version.md`](version.md), padrão `X.Y.Z` (detalhes e gatilhos no
-próprio arquivo). Resumo:
+Version in [`version.md`](version.md), `X.Y.Z` standard (details and triggers in the
+file itself). Summary:
 
-- **X** release estável (manual) · **Y** mudança estrutural (manual) ·
-  **Z** automático a cada entrega (tela/tabela/layout/label/regra/segurança).
-- Formato de commit: `X.Y.Z - Descrição em português`.
-- O bump do `version.md` vai em **um** commit por entrega.
+- **X** stable release (manual) · **Y** structural change (manual) ·
+  **Z** automatic on each delivery (screen/table/layout/label/rule/security).
+- Commit format: `X.Y.Z - Description in Portuguese`.
+- The `version.md` bump goes in **one** commit per delivery.
 
 ---
 
-## Documentação
+## Documentation
 
-| Arquivo | Conteúdo |
+| File | Contents |
 |---|---|
-| [`version.md`](version.md) | Versão atual, convenção e changelog |
-| [`CLAUDE.md`](CLAUDE.md) | Guia operacional para agentes de IA |
-| [`SECURITY_GUIDELINES.md`](SECURITY_GUIDELINES.md) | Diretrizes de segurança |
-| [`docs/roteiro-jogo-rafaela.md`](docs/roteiro-jogo-rafaela.md) | Especificação do jogo |
-| [`docs/DEPLOY.md`](docs/DEPLOY.md) | Deploy em produção |
+| [`version.md`](version.md) | Current version, convention and changelog |
+| [`CLAUDE.md`](CLAUDE.md) | Operational guide for AI agents |
+| [`SECURITY_GUIDELINES.md`](SECURITY_GUIDELINES.md) | Security guidelines |
+| [`docs/roteiro-jogo-rafaela.md`](docs/roteiro-jogo-rafaela.md) | Game specification |
+| [`docs/DEPLOY.md`](docs/DEPLOY.md) | Production deploy |
 
 ---
 
-## Checklist Pré-Commit
+## Pre-Commit Checklist
 
-- [ ] `php artisan pint` — formatação (se disponível)
-- [ ] `php -l` nos arquivos PHP alterados
-- [ ] `php artisan view:cache && php artisan view:clear` — valida Blade
-- [ ] Jogo testado no navegador (virada de cartas, vitória, log)
-- [ ] `.env.example` atualizado se adicionou variável nova
-- [ ] `version.md` com bump + changelog se aplicável
-- [ ] `@csrf` em todos os formulários
+- [ ] `php artisan pint` — formatting (if available)
+- [ ] `php -l` on the changed PHP files
+- [ ] `php artisan view:cache && php artisan view:clear` — validates Blade
+- [ ] Game tested in the browser (card flip, victory, log)
+- [ ] `.env.example` updated if you added a new variable
+- [ ] `version.md` bumped + changelog if applicable
+- [ ] `@csrf` on all forms
